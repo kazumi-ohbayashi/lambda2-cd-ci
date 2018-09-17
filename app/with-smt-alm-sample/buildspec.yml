@@ -20,7 +20,15 @@ phases:
         cp -rp ${app_path}/src/* .zip
         pip install -r ${app_path}/requirements.txt -t .zip
         cd .zip
-        ls -la
+        zip -r app.zip *
+        cd ..
+        [ -d .cfn ] || mkdir .cfn
+        cp -rp ${app_path}/params/* .cfn
+        aws cloudformation package \
+          --template-file ${app_path}/cfn.yml \
+          --s3-bucket $S3_BUCKET \
+          --output-template-file .cfn/packaged.yml
+        ls -la .cfn/packaged.yml
 
 artifacts:
   files:
