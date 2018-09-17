@@ -8,27 +8,26 @@ Parameters:
     Default: kazumi-ohbayashi
   Repo:
     Type: String
-#    Default: cfn-ci-cd-demo
-    Default: lambda-cd-ci
+    Default: lambda-cd-ci2
   Email:
     Type: String
     Default: kazumi.ohbayashi@nextor.jp
   AppName:
     Type: String
-    Default: cfn-ci-cd-demo
+    Default: with-smt-alm-sample
   StackConfigDev:
     Type: String
-    Default: param.dev.json
+    Default: app/with-smt-alm-sample/params/param.dev.json
   StackConfigProd:
     Type: String
-    Default: param.prod.json
+    Default: app/with-smt-alm-sample/params/param.prod.json
   TemplateFilePath:
     Type: String
     Default: packaged.yml
   OAuthToken:
     Type: String
     NoEcho: true
-#    Default: c3053a321dcdea4c5db9a6c0faaa78cdb2d2f882
+    Default: 29d26dfd79915ad933adffb582e776ab2200d480
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -141,6 +140,7 @@ Resources:
             Value: !Ref CodeBuildBucket
       Source:
         Type: CODEPIPELINE
+        BuildSpec: app/with-smt-alm-sample/buildspec.yml
 
   CFnRole:
     Type: AWS::IAM::Role

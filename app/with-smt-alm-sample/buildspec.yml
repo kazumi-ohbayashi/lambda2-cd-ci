@@ -8,27 +8,28 @@ phases:
   pre_build:
     commands:
       - |
+        export APP_PATH=app/with-smt-alm-sample
         [ -d .cfn ] || mkdir .cfn
         aws configure set default.region $AWS_REGION
         [ -d .zip ] || mkdir .zip
-        cp -rp src/* .zip
-        pip install -r requirements.txt -t .zip
+        cp -rp ${APP_PATH}/src/* .zip
+        pip install -r ${APP_PATH}/requirements.txt -t .zip
+        cp -rp ${APP_PATH}/params/* .cfn
   build:
     commands:
       - |
+        export APP_PATH=app/with-smt-alm-sample
         cd .zip
         zip -r app.zip *
         cd ..
         aws cloudformation package \
-          --template-file cfn.yml \
+          --template-file ${APP_PATH}/cfn.yml \
           --s3-bucket $S3_BUCKET \
           --output-template-file .cfn/packaged.yml
         ls -la .cfn/packaged.yml
-        ls -la params
 
 artifacts:
   files:
     - .cfn/*
-    - params/*
     - .zip/app.zip
   discard-paths: yes
