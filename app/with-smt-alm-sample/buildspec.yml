@@ -16,13 +16,17 @@ phases:
   build:
     commands:
       - |
+        echo ${app_path}
         [ -d .zip ] || mkdir .zip
         cp -rp ${app_path}/src/* .zip
         pip install -r ${app_path}/requirements.txt -t .zip
+        ls -la .zip
         cd .zip
         zip -r app.zip *
+        ls -la .zip/app.zip
         cd ..
         [ -d .cfn ] || mkdir .cfn
+        ls -la .cfn
         cp -rp ${app_path}/params/* .cfn
         aws cloudformation package \
           --template-file ${app_path}/cfn.yml \
