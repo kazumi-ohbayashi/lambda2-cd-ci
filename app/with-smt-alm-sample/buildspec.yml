@@ -1,5 +1,9 @@
 version: 0.1
 
+env:
+  variables:
+    app_path: "app/with-smt-alm-sample"
+
 phases:
   install:
     commands:
@@ -8,22 +12,20 @@ phases:
   pre_build:
     commands:
       - |
-        setenv APP_PATH app/with-smt-alm-sample
         [ -d .cfn ] || mkdir .cfn
         aws configure set default.region $AWS_REGION
         [ -d .zip ] || mkdir .zip
-        cp -rp ${APP_PATH}/src/* .zip
-        pip install -r ${APP_PATH}/requirements.txt -t .zip
-        cp -rp ${APP_PATH}/params/* .cfn
+        cp -rp ${app_path}/src/* .zip
+        pip install -r ${app_path}/requirements.txt -t .zip
+        cp -rp ${app_path}/params/* .cfn
   build:
     commands:
       - |
-        setenv APP_PATH app/with-smt-alm-sample
         cd .zip
         zip -r app.zip *
         cd ..
         aws cloudformation package \
-          --template-file ${APP_PATH}/cfn.yml \
+          --template-file ${app_path}/cfn.yml \
           --s3-bucket $S3_BUCKET \
           --output-template-file .cfn/packaged.yml
         ls -la .cfn/packaged.yml
