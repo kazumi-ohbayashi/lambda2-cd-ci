@@ -12,18 +12,18 @@ phases:
   pre_build:
     commands:
       - |
-        [ -d .cfn ] || mkdir .cfn
         aws configure set default.region $AWS_REGION
-        [ -d .zip ] || mkdir .zip
-        cp -rp ${app_path}/src/* .zip
-        pip install -r ${app_path}/requirements.txt -t .zip
-        cp -rp ${app_path}/params/* .cfn
   build:
     commands:
       - |
+        [ -d .zip ] || mkdir .zip
+        cp -rp ${app_path}/src/* .zip
+        pip install -r ${app_path}/requirements.txt -t .zip
         cd .zip
         zip -r app.zip *
         cd ..
+        [ -d .cfn ] || mkdir .cfn
+        cp -rp ${app_path}/params/* .cfn
         aws cloudformation package \
           --template-file ${app_path}/cfn.yml \
           --s3-bucket $S3_BUCKET \
