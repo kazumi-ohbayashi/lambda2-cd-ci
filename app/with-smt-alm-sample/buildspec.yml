@@ -34,6 +34,6 @@ phases:
 
 artifacts:
   files:
-    - .cfn/*
-    - .zip/app.zip
+    - ${app_path}/.cfn/*
+    - ${app_path}/.zip/app.zip
   discard-paths: yes
