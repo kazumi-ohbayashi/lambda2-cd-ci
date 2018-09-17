@@ -23,8 +23,8 @@ phases:
         ls -la .zip
         cd .zip
         zip -r app.zip *
-        ls -la .zip/app.zip
         cd ..
+        ls -la .zip/app.zip
         [ -d .cfn ] || mkdir .cfn
         ls -la .cfn
         cp -rp ${app_path}/params/* .cfn
