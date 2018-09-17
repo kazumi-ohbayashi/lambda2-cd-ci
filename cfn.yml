@@ -1,0 +1,118 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: CloudFormation CI/CD Demo
+
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+#  VpcId:
+#    Description: VpcId
+#    Type : AWS::EC2::VPC::Id
+#    Default: vpc-44b83d20 # TODO 削除する
+#  PrivateSubnets:
+#    Description: Private Subnets for this conetents.
+#    Type : List<AWS::EC2::Subnet::Id>
+#    Default: "subnet-13edb95a,subnet-bee8a5e5" # TODO 削除する
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: General Configuration
+        Parameters:
+          - Stage
+    ParameterLabels:
+      Stage:
+        default: Stage
+
+Resources:
+
+#  SecurityGroup:
+#    Type: AWS::EC2::SecurityGroup
+#    Properties:
+#      VpcId: !Ref VpcId
+#      GroupDescription: SecurityGroup
+#      SecurityGroupIngress:
+#        - CidrIp: 0.0.0.0/0
+#          IpProtocol: tcp
+#          FromPort: 80
+#          ToPort: 80
+#        - CidrIp: 0.0.0.0/0
+#          IpProtocol: tcp
+#          FromPort: 443
+#          ToPort: 443
+#      Tags:
+#        - Key: Name
+#          Value: TestLambda
+
+  TestRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: TestRole
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Path: "/"
+      Policies:
+        -
+          PolicyName: "root"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action:
+                  - "lambda:InvokeFunction"
+                  - "lambda:GetFunctionConfiguration"
+                Resource:
+                  - "arn:aws:lambda:*:*:function:*"
+              -
+                Effect: "Allow"
+                Action:
+                  - "ec2:CreateNetworkInterface"
+                  - "ec2:DescribeNetworkInterfaces"
+                  - "ec2:DeleteNetworkInterface"
+                Resource:
+                  - "*"
+
+  TestLambda:
+    DependsOn: TestRole
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: TestFunction
+      Handler: app.lambda_handler
+      Role: !GetAtt TestRole.Arn
+      Code: .zip/app.zip
+#        S3Bucket: !Ref LambdaS3Bucket
+#        S3Key: !Ref LambdaWALocationToESS3Key
+      Runtime: python3.6
+      MemorySize: 128
+      Timeout: 60
+#      VpcConfig:
+#        SecurityGroupIds:
+#          - !GetAtt ESSecurityGroup.GroupId
+#        SubnetIds: !Ref PrivateSubnets
+      Description: ""
+      Environment:
+        Variables:
+          ES_INDICES: "user"
+
+#  Custom:
+#    Type: AWS::CloudFormation::Stack
+#    Properties:
+#      TemplateURL: src/custom.yml
+#      Parameters:
+#        LambdaAMIInfoRoleArn: !GetAtt IAM.Outputs.LambdaAMIInfoRoleArn
+
+#Outputs:
+#  PublicIp:
+#    Value: !GetAtt Compute.Outputs.PublicIp
