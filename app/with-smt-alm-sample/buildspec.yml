@@ -8,7 +8,7 @@ phases:
   pre_build:
     commands:
       - |
-        export APP_PATH=app/with-smt-alm-sample
+        setenv APP_PATH app/with-smt-alm-sample
         [ -d .cfn ] || mkdir .cfn
         aws configure set default.region $AWS_REGION
         [ -d .zip ] || mkdir .zip
@@ -18,7 +18,7 @@ phases:
   build:
     commands:
       - |
-        export APP_PATH=app/with-smt-alm-sample
+        setenv APP_PATH app/with-smt-alm-sample
         cd .zip
         zip -r app.zip *
         cd ..

@@ -8,7 +8,7 @@ Parameters:
     Default: kazumi-ohbayashi
   Repo:
     Type: String
-    Default: lambda-cd-ci2
+    Default: lambda2-cd-ci
   Email:
     Type: String
     Default: kazumi.ohbayashi@nextor.jp
