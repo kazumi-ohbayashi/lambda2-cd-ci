@@ -27,7 +27,6 @@ Parameters:
   OAuthToken:
     Type: String
     NoEcho: true
-    Default: 29d26dfd79915ad933adffb582e776ab2200d480
 
 Metadata:
   AWS::CloudFormation::Interface:
